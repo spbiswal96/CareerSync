@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+venv-test/
+.venv/
+*.egg-info/
+
+# Environment variables
+.env
+
+# Node
+node_modules/
+dist/
+build/
+
+# Uploads & temp resume data
+backend/uploads/
+backend/temp/
+backend/data/
+*.pdf
+*.docx
+!Proposed Project.pdf
+
+# Database
+*.db
+*.sqlite3
+
+# Logs
+*.log
+
+# OS/IDE
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+.antigravity/
