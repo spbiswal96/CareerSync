@@ -9,6 +9,7 @@ from app.services.resume_parser import (
     UnsupportedFileTypeError,
     extract_text,
 )
+from app.services.structured_parser import parse_resume
 from app.utils.file_utils import TEMP_DIR, is_allowed_extension, save_upload
 
 logger = get_logger(__name__)
@@ -56,3 +57,22 @@ async def extract_test(resume_id: str):
         raise HTTPException(status_code=422, detail=str(e))
 
     return {"resume_id": resume_id, "text_length": len(text), "preview": text[:200]}
+
+
+@router.post("/{resume_id}/parse-test")
+async def parse_test(resume_id: str):
+    """TEMPORARY diagnostic route. Not part of the final API surface —
+    will be removed once /api/analyze consumes structured_parser.py directly."""
+    matches = list(Path(TEMP_DIR).glob(f"{resume_id}.*"))
+    if not matches:
+        raise HTTPException(status_code=404, detail="resume_id not found")
+
+    try:
+        text = extract_text(matches[0])
+    except UnsupportedFileTypeError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    except EmptyResumeTextError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+
+    parsed = parse_resume(text)
+    return parsed.model_dump(exclude={"raw_text"})
